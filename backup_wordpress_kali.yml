@@ -1,0 +1,25 @@
+---
+- name: Sauvegarde de WordPress sur Kali
+  hosts: kali
+  become: yes
+
+  vars:
+    wp_dir: /opt/wordpress
+    backup_dir: /opt/backups
+
+  tasks:
+    - name: Créer le répertoire de sauvegarde
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Sauvegarde des volumes Docker
+      shell: |
+        date_str=$(date +%Y%m%d_%H%M%S)
+        cd {{ wp_dir }}
+        docker-compose stop
+        tar -czf {{ backup_dir }}/wordpress_backup_${date_str}.tar.gz .
+        docker-compose start
+      args:
+        executable: /bin/bash
