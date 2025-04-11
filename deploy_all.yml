@@ -24,9 +24,9 @@
         update_cache: yes
 
     - name: Ajouter la clé GPG Docker
-      apt_key:
-        url: https://download.docker.com/linux/debian/gpg
-        state: present
+      ansible.builtin.shell: |
+        curl -fsSL https://download.docker.com/linux/debian/gpg | tee /etc/apt/trusted.gpg.d/docker.gpg
+      become: yes
 
     - name: Ajouter le dépôt Docker
       apt_repository:
